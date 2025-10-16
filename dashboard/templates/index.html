@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <title>RE MVP Dashboard - Zeta</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #0a0a0a; color: #00ff00; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background-color: #1a1a1a; }
+        tr:hover { background-color: #1a1a1a; }
+        a { color: #00ff00; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .suspicious { color: #ff5555; font-weight: bold; }
+        .safe { color: #00ff00; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .search-box { margin-bottom: 20px; }
+        .search-box input { padding: 8px; width: 300px; background-color: #1a1a1a; color: #00ff00; border: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 ZETA REVERSE ENGINEERING DASHBOARD 🚀</h1>
+        <p>Commander Alpha - Safe Static Analysis Suite 💀</p>
+    </div>
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search reports by SHA256 or filename..." onkeyup="searchReports()">
+    </div>
+    
+    <table id="reportsTable">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Size (bytes)</th>
+                <th>SHA256</th>
+                <th>Modified</th>
+                <th>Entropy</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reports %}
+            <tr>
+                <td><a href="/report/{{r.name}}">{{r.name}}</a></td>
+                <td>{{r.size}}</td>
+                <td>{{r.sha256[:16]}}...</td>
+                <td>{{r.modified}}</td>
+                <td>{{"{:.2f}".format(r.entropy)}}</td>
+                <td class="{% if r.suspicious %}suspicious{% else %}safe{% endif %}">
+                    {% if r.suspicious %}⚠️ SUSPICIOUS{% else %}✅ SAFE{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <script>
+        function searchReports() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById("reportsTable");
+            const tr = table.getElementsByTagName("tr");
+            
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName("td");
+                let found = false;
+                
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                
+                tr[i].style.display = found ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>

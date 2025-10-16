@@ -1,0 +1,2 @@
+pefile    # optional; analyzer runs without it
+yara-python   # optional, only if you want YARA scanning
